@@ -1,0 +1,5 @@
+* text
+
+*.md text
+*.sh text eol=lf
+*.php text eol=lf diff=php
