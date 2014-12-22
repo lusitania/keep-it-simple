@@ -6,3 +6,14 @@ The obvious choice would be to use `ssh-copy-id`. However the script supplies no
  1. Provide an executable file that prints the password to stdout
  1. Set the environment appropriately
  1. Trick `ssh` to actually use the new environment by detaching it from the current terminal and placing it into a new session
+
+## Instructions
+Deploying the key to multiple servers is now dead simple:
+
+```
+servers="ip1 ip2 ..."
+idfile=~/.ssh/id_rsa.pub
+
+for host in $servers; do \
+    echo <passwd> | ./deploy-ssh-key.sh ssh-copy-id -i "$idfile" user@$host \
+done
