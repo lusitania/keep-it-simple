@@ -13,7 +13,12 @@ Deploying the key to multiple servers is now dead simple:
 ```
 servers="ip1 ip2 ..."
 idfile=~/.ssh/id_rsa.pub
+read somevar
 
 for host in $servers; do \
-    echo <passwd> | ./deploy-ssh-key.sh ssh-copy-id -i "$idfile" user@$host \
+    MySshPass="$somevar" ./deploy-ssh-key.sh ssh-copy-id -i "$idfile" user@$host \
 done
+```
+Notice that I don't echo the password into the pipe. This way the password doesn't appear in BASH's history. The extra assignment is necessary due to the internal unset of MySshPass within our shell script.
+
+This approach also opens the path for per-server passwords. `awk` may be your tool of choice.
