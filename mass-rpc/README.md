@@ -29,7 +29,10 @@ consolidated="$(echo -e "$mylist"|grep -vE "^\W*$|^\W*#"|sort|uniq -u)"
 Iterate of server selection and submit command:
 ```
 read mycmd
-for s in $consolidated; do echo -n -e "\n==> Server: $s\t"; ssh -o ConnectTimeout=5 -o BatchMode=yes -o stricthostkeychecking=no $s "$mycmd"; done
+for s in $consolidated; do \
+    echo -n -e "\n==> Server: $s\t";\
+    ssh -o ConnectTimeout=5 -o BatchMode=yes -o stricthostkeychecking=no $s "$mycmd";\
+done
 ```
 
 ## Discussion
