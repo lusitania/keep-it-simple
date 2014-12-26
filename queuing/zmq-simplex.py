@@ -57,6 +57,7 @@ class Simplexer:
         #
         # http://api.zeromq.org/4-0:zmq-socket#toc10
         self.subscribe_sock = zmq.SUB
+        self.publish_sock = zmq.PUB
 
         # The ZMQ_SUBSCRIBE option shall establish a new message filter on a
         # ZMQ_SUB socket. Newly created ZMQ_SUB sockets shall filter out all
@@ -102,7 +103,7 @@ class Simplexer:
         '''
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Context.socket
-        self.sock = self.context.socket(zmq.PUB)
+        self.sock = self.context.socket(self.publish_sock)
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.bind
         self.sock.bind(self.address)
