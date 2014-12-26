@@ -1,12 +1,15 @@
+# -*- coding: utf8 -*-
+# vim: tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 import zmq
+
 
 class Simplexer:
     '''Rudimentary simplex publisher-subscriber implementation.
 
     This is a simple, one-directional chat application without indicators
-    for line termination or other signalling.
+    for publisher initiated line termination.
 
-    The module supports command line invocation:
+    The module supports command line invocation (any order of invocation):
         TerminalA> python3 -m zmq-simplex -s
         TerminalB> python3 -m zmq-simplex -p
 
@@ -69,22 +72,46 @@ class Simplexer:
         # See http://api.zeromq.org/4-0:zmq-setsockopt#toc6
         self.subscribe_allmsg = (zmq.SUBSCRIBE, b'')
 
+        # Register a simple termination signal
+        # Note: Signalling in general is a tricky thing so don't expect much
+        # at this point.
+        def terminate(signal, frame):
+            '''Signal callback to terminate the program.'''
+
+            print("Terminating")
+            import sys
+            self.__del__()
+            sys.exit()  # Apparently this is the only way to abort input()
+
+        from signal import signal, SIGINT
+        signal(SIGINT, terminate)
+
+    def __del__(self):
+        '''Close all open resources on object disposal.'''
+        if self.context.closed:
+            return
+
+        self.sock.close()
+        self.context.term()
+
     def publish(self):
         '''Create and open sending endpoint of channel. Also read text from
         STDIN and publish it to the channel.
+
+        Beware that subscribe() and publish() are mutually exclusive, here.
         '''
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Context.socket
-        s = self.context.socket(zmq.PUB)
+        self.sock = self.context.socket(zmq.PUB)
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.bind
-        s.bind(self.address)
+        self.sock.bind(self.address)
+
+        print("Publishing on {}. Ctrl-C to abort.".format(self.address))
 
         from datetime import datetime
-        cnt = -1
 
         while True:
-            cnt += 1
             text = input("> ")
 
             # Note: Common Python data structures have build-in support
@@ -92,28 +119,30 @@ class Simplexer:
 
             # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.send_pyobj
             # Send Flags: http://api.zeromq.org/4-0:zmq-send#toc2
-            s.send_pyobj(msg)
+            self.sock.send_pyobj(msg)
 
     def subscribe(self):
         '''Create and open receiving endpoint of channel. Also subscribe to
         messages from the channel and write then to STDOUT.
+
+        Beware that subscribe() and publish() are mutually exclusive, here.
         '''
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Context.socket
-        s = self.context.socket(self.subscribe_sock)
+        self.sock = self.context.socket(self.subscribe_sock)
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.setsockopt
-        s.setsockopt(*self.subscribe_allmsg)
+        self.sock.setsockopt(*self.subscribe_allmsg)
 
         # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.connect
-        s.connect(self.address)
+        self.sock.connect(self.address)
 
-        print("Subscribing to {}".format(self.address))
+        print("Subscribing to {}. Ctrl-C to abort.".format(self.address))
 
         while True:
             # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.recv_pyobj
             # Receive Flags: http://api.zeromq.org/4-0:zmq-recv#toc2
-            msg = s.recv_pyobj()
+            msg = self.sock.recv_pyobj()
 
             print(msg)
 
@@ -138,8 +167,10 @@ if __name__ == '__main__':
         help='assume subscriber position in simplex channel',
     )
 
+    channel = Simplexer()
+
     args = p.parse_args()
     if args.publish:
-        Simplexer().publish()
+        channel.publish()
     elif args.subscribe:
-        Simplexer().subscribe()
+        channel.subscribe()
