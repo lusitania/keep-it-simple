@@ -1,5 +1,15 @@
 # -*- coding: utf8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+'''Hands-on simplex chat implementation.
+
+The module supports command line invocation (any order of invocation):
+    TerminalA> python3 -m zmq-simplex -s
+    TerminalB> python3 -m zmq-simplex -p
+
+    (TerminalB)> go type stuff
+    (TerminalA){'id': datetime.datetime(...), 'message': 'go type stuff'}
+'''
+
 import zmq
 
 
@@ -7,14 +17,9 @@ class Simplexer:
     '''Rudimentary simplex publisher-subscriber implementation.
 
     This is a simple, one-directional chat application without indicators
-    for publisher initiated line termination.
-
-    The module supports command line invocation (any order of invocation):
-        TerminalA> python3 -m zmq-simplex -s
-        TerminalB> python3 -m zmq-simplex -p
-
-        (TerminalB)> go type stuff
-        (TerminalA){'id': datetime.datetime(...), 'message': 'go type stuff'}
+    for publisher initiated line termination. This could be done by 
+    distinguishing messages into payload and command (additional dict 
+    attribute).
 
     ØMQ essentials:
         Publishing:
