@@ -8,3 +8,6 @@ Code under this category is meant to demonstrate unreliable data transfer like s
 pip3   -r zmq-simplex.pip
 python -m zmq-simplex
 ```
+
+If the Python requirements require provisioning themselves, like with ZeroMQ,
+you should have a look at the .sh file.
