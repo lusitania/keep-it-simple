@@ -14,12 +14,12 @@ import zmq
 
 
 class Simplexer:
-    '''Rudimentary simplex publisher-subscriber implementation.
+    '''Rudimentary simplex publisher-subscriber implementation (unsolicited
+    message exchange).
 
     This is a simple, one-directional chat application without indicators
-    for publisher initiated line termination. This could be done by 
-    distinguishing messages into payload and command (additional dict 
-    attribute).
+    for publisher initiated line termination. See zmq-one-off-handshake.py
+    for details.
 
     ØMQ essentials:
         Publishing:
