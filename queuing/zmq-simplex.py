@@ -23,11 +23,11 @@ class Simplexer:
 
     ØMQ essentials:
         Publishing:
-            zmq.Context().socket()
+            zmq.Context().socket(PUB)
             socket.bind()
             socket.send_pyobj()
         Subscription:
-            zmq.Context().socket()
+            zmq.Context().socket(SUB)
             socket.connect()
             socket.recv_pyobj()
     '''
@@ -121,7 +121,7 @@ class Simplexer:
             text = input("> ")
 
             # Note: Common Python data structures have build-in support
-            msg = {"id": datetime.now(), "message": text}
+            msg = {"topic": "chat", "id": datetime.now(), "message": text}
 
             # https://zeromq.github.io/pyzmq/api/zmq.html#zmq.Socket.send_pyobj
             # Send Flags: http://api.zeromq.org/4-0:zmq-send#toc2

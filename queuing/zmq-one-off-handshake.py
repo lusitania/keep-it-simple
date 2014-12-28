@@ -20,11 +20,11 @@ class Handshake:
 
     ØMQ essentials:
         Responding:
-            zmq.Context().socket()
+            zmq.Context().socket(REP)
             socket.bind()
             socket.send_pyobj()
         Requesting:
-            zmq.Context().socket()
+            zmq.Context().socket(REQ)
             socket.connect()
             socket.recv_pyobj()
     '''
@@ -46,12 +46,12 @@ class Handshake:
         print("Service started")
 
         request = sock.recv_pyobj()
-        assert 'command' == request['type']
+        assert 'command' == request['topic']
         assert 'register' == request['payload']
 
         print('Registration received')
 
-        sock.send_pyobj({'type': 'command', 'payload': 'terminate'})
+        sock.send_pyobj({'topic': 'command', 'payload': 'terminate'})
 
         print('Line termination sent. Exiting.')
 
@@ -68,12 +68,12 @@ class Handshake:
         sock = context.socket(zmq.REQ)
         sock.connect(self.address)
 
-        sock.send_pyobj({'type': 'command', 'payload': 'register'})
+        sock.send_pyobj({'topic': 'command', 'payload': 'register'})
 
         print('Registration sent')
 
         response = sock.recv_pyobj()
-        assert 'command' == response['type']
+        assert 'command' == response['topic']
         assert 'terminate' == response['payload']
 
         print('Termination received. Exiting.')
