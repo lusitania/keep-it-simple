@@ -114,6 +114,9 @@ class Simplexer:
         self.sock.bind(self.address)
 
         print("Publishing on {}. Ctrl-C to abort.".format(self.address))
+        import time
+        time.sleep(1)  # HOTFIX for slow joiner symptom
+                       # http://zguide.zeromq.org/page:all#sockets-and-patterns
 
         from datetime import datetime
 
