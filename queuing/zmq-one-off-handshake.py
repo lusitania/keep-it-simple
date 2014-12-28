@@ -55,7 +55,7 @@ class Handshake:
 
         print('Line termination sent. Exiting.')
 
-        sock.close(linger=1)
+        sock.close(linger=0)
         context.term()
 
     def request(self):
@@ -78,7 +78,7 @@ class Handshake:
 
         print('Termination received. Exiting.')
 
-        sock.close(linger=1)
+        sock.close(linger=0)
         context.term()
 
 

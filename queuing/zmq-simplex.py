@@ -97,7 +97,7 @@ class Simplexer:
         if self.context.closed:
             return
 
-        self.sock.close()
+        self.sock.close(linger=0)
         self.context.term()
 
     def publish(self):
