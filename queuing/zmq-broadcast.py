@@ -13,11 +13,11 @@ The module supports command line invocation (any order of invocation):
 import zmq
 
 
-class Simplexer:
+class Broadcast:
     '''Rudimentary simplex publisher-subscriber implementation (unsolicited
     message exchange).
 
-    This is a simple, one-directional chat application without indicators
+    This is a simple, one-directional broadcast application without indicators
     for publisher initiated line termination. See zmq-one-off-handshake.py
     for details.
 
@@ -30,6 +30,25 @@ class Simplexer:
             zmq.Context().socket(SUB)
             socket.connect()
             socket.recv_pyobj()
+
+    PUB-SUB characteristics:
+        - Simplex
+        - Fan out/fair queued routing
+        - Message dropped when muted (no subscribers, high water mark)
+
+    Issues:
+    - zguide mentions the *slow joiner* symptom where messages are lost
+      because subscribers are still in connection state while publishers
+      already write-out messages: "the subscriber will always miss the first
+      messages that the publisher sends"
+      (http://zguide.zeromq.org/page:all#toc13). I'm not sure how to read the
+      statement correctly as in "loss during bind and first send" or "loss
+      during each send loop". So far I assume the former because subscription
+      would be useless if losses would always occur with each loop unless
+      registered beforehand. Therefore the hotfix to wait a second after bind
+      and before writing messages to the wire. Alternatively register
+      subscribers using PAIR and wait for first registration before sending
+      first message.
     '''
 
     def __init__(self):
@@ -115,8 +134,8 @@ class Simplexer:
 
         print("Publishing on {}. Ctrl-C to abort.".format(self.address))
         import time
-        time.sleep(1)  # HOTFIX for slow joiner symptom
-                       # http://zguide.zeromq.org/page:all#sockets-and-patterns
+        time.sleep(1)  # HOTFIX Wait 1s for slow joiner symptom
+                       # Use zmq.PAIR http://zguide.zeromq.org/page:all#toc46
 
         from datetime import datetime
 
@@ -176,7 +195,7 @@ if __name__ == '__main__':
         help='assume subscriber position in simplex channel',
     )
 
-    channel = Simplexer()
+    channel = Broadcast()
 
     args = p.parse_args()
     if args.publish:
