@@ -13,7 +13,8 @@ import zmq
 
 
 class Handshake:
-    '''Rudimentary handshake implementation (ordered message exchange).
+    '''Rudimentary request-response handshake implementation (ordered message
+    exchange).
 
     Beware that reliability considerations are not done here.
     See http://zguide.zeromq.org/page:all#toc86
@@ -27,6 +28,11 @@ class Handshake:
             zmq.Context().socket(REQ)
             socket.connect()
             socket.recv_pyobj()
+
+    REQ-REP characteristics:
+        - Duplex (lock-step)
+        - Round-robin/fair queued routing
+        - Client blocked when no service available (muted)
     '''
 
     def __init__(self):
