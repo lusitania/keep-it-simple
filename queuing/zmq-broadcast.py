@@ -133,9 +133,11 @@ class Broadcast:
         self.sock.bind(self.address)
 
         print("Publishing on {}. Ctrl-C to abort.".format(self.address))
+
+        # HOTFIX Wait 1s for slow joiner symptom
+        # Use zmq.PAIR http://zguide.zeromq.org/page:all#toc46
         import time
-        time.sleep(1)  # HOTFIX Wait 1s for slow joiner symptom
-                       # Use zmq.PAIR http://zguide.zeromq.org/page:all#toc46
+        time.sleep(1)
 
         from datetime import datetime
 
