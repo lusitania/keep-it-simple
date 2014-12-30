@@ -3,3 +3,5 @@
 *.md text
 *.sh text eol=lf
 *.php text eol=lf diff=php
+*.pip text eol=lf
+*.py text eol=lf
