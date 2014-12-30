@@ -28,7 +28,7 @@ while True:
     # Wait for events in watcher
     events = p.poll(None)  # value in ms/wait forever
 
-    # Reiterate if events where read but threshold was not meat
+    # Reiterate if events where read but threshold was not met
     # However, proceed and flush watcher if timeout kicked in
     if not thresh() and len(events) > 0:
         continue
