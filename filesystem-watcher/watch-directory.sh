@@ -6,7 +6,7 @@ sudo apt-get install mercurial
 # Provide Python inotify wrapper
 virtualenv3 .env
 . .env/bin/activate
-pip3 -r watch-directory.pip
+pip3 install -r watch-directory.pip
 
 # If you don't want to install mercurial you may clone a fork from github
 pip3 install -e git://github.com/gurubert/python-inotify.git#egg=python-inotify

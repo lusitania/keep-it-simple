@@ -5,4 +5,4 @@ sudo apt-get install libzmq3-dev
 # Provide Python zmq wrapper
 virtualenv3 .env
 . .env/bin/activate
-pip3 -r zmq-simplex.pip
+pip3 install -r zmq-simplex.pip
