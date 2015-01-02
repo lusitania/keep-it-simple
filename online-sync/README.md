@@ -80,14 +80,16 @@ rectangle "Init Phase" {
 ### Case: Prepare Service
 Flow of events:
 
-    - The Source starts a CommandService.
-    - The connection details (port) of the Source are printed to the console and must be used by the Sink to connect. (Discovery/exchange is not covered.)
-    - The source awaits incoming connections from clients (Sink).
+ - The Source starts a CommandService.
+ - The connection details (port) of the Source are printed to the console and
+   must be used by the Sink to connect. (Discovery/exchange is not covered.)
+ - The source awaits incoming connections from clients (Sink).
 
 ### Case: Register with Service
 Flow of events:
 
-    - The Sink connects to the CommandService of the Source with the connection details exchanged in *Prepare Service*.
+ - The Sink connects to the CommandService of the Source with the connection
+   details exchanged in *Prepare Service*.
 
 ```
 @startuml
