@@ -11,11 +11,11 @@ purposes) with system tools such as *rsync*. I've been in this situation in
 
 So instead of using a *block* procedure I devised an *online* scheme to
 transfer files as they change and lazily work on the backlog of yet unchanged/
-unsynced files. This implementation is closed source yet simple enough to
-replicate using ZeroMQ.
+unsynced files. The original solution is closed source yet simple enough to
+replicate in Python using ZeroMQ and python-inotify.
 
-osync essentials integrates to other *simpletons*, namely filesystem-watcher
-and queue. Have a peek if you want to learn more about INotify and ZeroMQ.
+osync essentially integrates to other *simpletons*, namely filesystem-watcher
+and queuing. Have a peek if you want to learn more about INotify and ZeroMQ.
 
 # Instructions
 TBD
@@ -35,6 +35,7 @@ Since this is about keeping it simple (and avoiding spaghetti code like in my ol
 ## Overview
 The application passes trough three stages: Initialisation, Transfer and Termination.
 
+```
 @startuml
 start
 :Init Phase;
@@ -46,8 +47,10 @@ end note
 :Termination Phase;
 stop
 @enduml
+```
 
 ## Initialisation
+```
 @startuml
 left to right direction
 Source  <<Operator>>
@@ -72,16 +75,21 @@ rectangle "Init Phase" {
     (ER) - Sink : <<initiate>>
 }
 @enduml
+```
 
 ### Case: Prepare Service
 Flow of events:
+
     - The Source starts a CommandService.
     - The connection details (port) of the Source are printed to the console and must be used by the Sink to connect. (Discovery/exchange is not covered.)
     - The source awaits incoming connections from clients (Sink).
+
 ### Case: Register with Service
 Flow of events:
+
     - The Sink connects to the CommandService of the Source with the connection details exchanged in *Prepare Service*.
 
+```
 @startuml
 left to right direction
 
@@ -105,7 +113,9 @@ rectangle "Transfer Phase" {
     Source - (QR) : <<participate>>
 }
 @enduml
+```
 
+```
 @startuml
 left to right direction
 
@@ -125,3 +135,4 @@ rectangle "Termination Phase" {
     Source - (ST) : <<initiate>>
 }
 @enduml
+```
