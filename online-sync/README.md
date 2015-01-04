@@ -77,10 +77,11 @@ Flow of events:
  1. DataClient connects to the DataService
  1. DataClient issues a registration request to the SourceController 
  1. The SourceController sends RegistrationRequest command to the SourceControlService
-    1. The SourceControlService notifies the DataService to issue SynchronisationMessages
-    1. DataService sends SynchronisationMessages to DataClient
+    1. The SourceControlService calls the DataService to issue Synchronisation messages
+    1. DataService sends SynchronisationMessages to the DataClient
     1. SourceControlService responds with a RegistrationRequestAcknowledgement
- 1. The DataClient receives the SynchronisationMessages and notifies the SourceController of successful registration
+ 1. The SourceController notifies the DataClient the synchronisation is underway
+ 1. The DataClient receives the Synchronisation messages and notifies the SourceController of successful registration
  1. SourceController sends RegistrationSuccess command to the SourceControlService
     1. The SourceControlService notifies the DataService to stop sending SynchronisationMessages
     1. The SourceControlService sends RegistrationSuccessAcknowledgement
@@ -88,6 +89,8 @@ Flow of events:
 Entry condition:
 
  - SourceController is connected with SourceControlService
+
+![Data Channel](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/init_datachannel.svg)
 
 ## Transfer Phase
 
