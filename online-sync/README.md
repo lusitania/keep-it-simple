@@ -62,38 +62,27 @@ Flow of events:
 
 ## Initialisation Phase
 ```
-'OUTDATED
 @startuml
 left to right direction
-Source  <<Operator>>
-Sink    <<Operator>>
+SourceOp  <<Operator>>
+SinkOp    <<Operator>>
 
 rectangle "Init Phase" {
-    :Prepare Service: as (PS)
-    :Register with Service: as (RS)
-    :Secure Channel: as (SC)
-    :Ensure Readiness: as (ER)
+    :Init CommandChannel: as (ICC)
+    :Init DataChannel: as (IDC)
     
-    Source ..> Sink : exchange connection details
+    SourceOp ..> SinkOp : exchange ConnectionDetails
     
-    Source - (PS)
+    SourceOp - (ICC) : <<initiate>>
+    (ICC) - SinkOp : <<participate>>
 
-    '(PS) -[hidden]-(RS)
-
-    (RS) - Sink
-    (RS) ..> (SC) : <<include>>
-    
-    Source - (SC) : <<initiate>>
-    (SC) - Sink : <<participate>>
-    
-    Source - (ER) : <<participate>>
-    (ER) - Sink : <<initiate>>
+    SinkOp -l- (IDC)
 }
 @enduml
 ```
 
 ## Case: Init CommandChannel
-Participating actors: Source, SourceOperator (SourceOp), Sink, SinkOperator (SinkOp)
+Participating actors: SourceOperator (SourceOp), SinkOperator (SinkOp)
 
 Flow of events:
 
@@ -108,11 +97,11 @@ Entry condition:
  - (Non-system) Two ports are already SSH forwarded between Source and Sink.
 
 ## Case: Init DataChannel
-Participating actors: SourceController
+Participating actors: SinkOp
 
 Flow of events:
 
- 1. The entry condition initiates the start of the DataClient
+ 1. The SinkOp starts the DataClient
  1. DataClient connects to the DataService
  1. DataClient issues a registration request to the SourceController 
  1. The SourceController sends RegistrationRequest command to the SourceControlService
