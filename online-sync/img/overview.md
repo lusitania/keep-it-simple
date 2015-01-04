@@ -1,4 +1,5 @@
-![Overview](overview.svg)
+![Overview](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/overview.svg)
+
 ```
 @startuml
 start
