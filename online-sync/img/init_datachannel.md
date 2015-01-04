@@ -27,18 +27,18 @@ SinkOp -> DC : start()
     SCS <- SCL : {RegistrationRequest}
 
     SCS -> DS : call for synchronisation
+    activate DS
     DS -> DC : {Sychronisation}
 
     SCS --> SCL : {RegistrationRequestAcknowledgement}
     DC <- SCL : registration requested
-
-    ...
 
     DC --> SCL : confirm synchronisation
     SCS <- SCL : {RegistrationSuccess}
 
     DS -> DC : {Sychronisation}
     SCS -> DS : stop synchronisation
+    deactivate DS
 
     SCS --> SCL : {RegistrationSuccessAcknowledgement}
 @enduml
