@@ -40,19 +40,7 @@ Since this is about keeping it simple (and avoiding spaghetti code like in my ol
 ## Overview
 The application passes trough three stages: Initialisation, Transfer and Termination.
 
-```
-@startuml
-start
-:Init Phase;
-:Transfer Phase;
-note right
-  long running activity,
-  process requires signal to proceed
-end note
-:Termination Phase;
-stop
-@enduml
-```
+![Overview](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/overview.svg)
 
 Flow of events:
 
@@ -61,25 +49,7 @@ Flow of events:
  1. In a *Termination Phase* an Endpoint send termination request which closes down the connection in mutual agreement
 
 ## Initialisation Phase
-```
-@startuml
-left to right direction
-SourceOp  <<Operator>>
-SinkOp    <<Operator>>
-
-rectangle "Init Phase" {
-    :Init CommandChannel: as (ICC)
-    :Init DataChannel: as (IDC)
-    
-    SourceOp ..> SinkOp : exchange ConnectionDetails
-    
-    SourceOp - (ICC) : <<initiate>>
-    (ICC) - SinkOp : <<participate>>
-
-    SinkOp -l- (IDC)
-}
-@enduml
-```
+![Initialisation](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/initialisation.svg)
 
 ## Case: Init CommandChannel
 Participating actors: SourceOperator (SourceOp), SinkOperator (SinkOp)
@@ -95,6 +65,8 @@ Flow of events:
 Entry condition:
 
  - (Non-system) Two ports are already SSH forwarded between Source and Sink.
+
+![Command Channel](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/init_commandchannel.svg)
 
 ## Case: Init DataChannel
 Participating actors: SinkOp
