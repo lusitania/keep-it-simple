@@ -2,6 +2,7 @@
 
 ```
 @startuml
+hide footbox
 actor SourceOp <<Operator>>
 
 box "Source Endpoint"
@@ -14,15 +15,20 @@ box "Sink Endpoint"
 end box
 actor SinkOp <<Operator>>
 
-SourceOp -> SCS : start
+SourceOp -> SCS : start()
     activate SCS
     SCS -> SCS : bind socket
 
-    SCS -> DS : start
+    SCS -> DS : start()
     activate DS
 
-SinkOp -> SCL : start
+SinkOp -> SCL : start()
     activate SCL
     SCL -> SCS : connect
+
+legend right
+    start() provides ConnectionDetails
+    previously exchanged by Operators
+end legend
 @enduml
 ```
