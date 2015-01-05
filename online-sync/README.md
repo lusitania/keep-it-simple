@@ -51,7 +51,7 @@ Flow of events:
 ## Initialisation Phase
 ![Initialisation](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/initialisation.svg)
 
-## Case: Init CommandChannel
+### Case: Init CommandChannel
 Participating actors: SourceOperator (SourceOp), SinkOperator (SinkOp)
 
 Flow of events:
@@ -68,7 +68,7 @@ Entry condition:
 
 ![Command Channel](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/init_commandchannel.svg)
 
-## Case: Init DataChannel
+### Case: Init DataChannel
 Participating actors: SinkOp
 
 Flow of events:
@@ -90,61 +90,58 @@ Entry condition:
 
  - SourceController is connected with SourceControlService
 
+Exit condition:
+
+ - DataClient is ready to reliably receive messages from DataService
+
 ![Data Channel](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/init_datachannel.svg)
 
 ## Transfer Phase
 
-```
-'OUTDATED
-@startuml
-left to right direction
+### Case: Transfer Data
+Participating actors: SinkOp <<Operator>>, SourceOp <<Operator>>, INotify <<File System>>
 
-Source              <<Operator>>
-Sink                <<Operator>>
-"File Events" as Ev <<Operating System>>
+Flow of events:
 
-rectangle "Transfer Phase" {
-    :Commence Transfer: as (CT)
-    :Transfer Report: as (TR)
-    :Queue Report: as (QR)
+ 1. FileEventQueue registers to INotify events from a particular root path in the local file system
+ 1. DataService polls FileEventQueue indefinitely and for every polled entry it
+    1. Retrieves the file content
+    1. Wraps file content and relative path (without root path component) into a FileData message
+    1. Sends the FileData message to the DataClient
 
-    Source - (CT) : <<initiate>>
-    Ev - (CT) : <<participate>>
-    (CT) - Sink : <<participate>>
+Entry conditions:
 
-    (TR) - Sink : <<initiate>>
-    Source - (TR) : <<participate>>
+ - DataClient is ready to receive (successful synchronisation with DataService)
 
-    Ev - (QR) : <<initiate>>
-    Source - (QR) : <<participate>>
-}
-@enduml
-```
+Exit conditions:
+
+ - An operator signals either DataService or DataClient to terminate transfer
+
+Quality requirements:
+
+ - DataService may buffer polled entries until a certain threshold was met
+ - FileData messages and thereby file contents fit into memory and must not be split
+
+### Case: Too many INotify events (extension to Transfer Data)
+Participating actors: INotify <<File System>>, FindTouch <<Operator>>
+
+Flow of events: 
+
+ 1. Warn the operator to throttle change events if event queue reaches warning threshold
+ 1. Go to Termination phase if event queue reaches critical threshold
+
+Entry condition:
+
+ - The OS internal INotify event queue closes in on its maximum (high water mark). Events come in faster than they can be send to the client.
+
+Quality requirements:
+
+ - Warning threshold should be high enough to seldom trigger the event but low enough to allow the operator to respond.
+ - Critical threshold must be higher than warning and at most 100% of the queue
 
 ## Termination Phase
 
-```
-'OUTDATED
-@startuml
-left to right direction
-
-Source  <<Operator>>
-Sink    <<Operator>>
-
-rectangle "Termination Phase" {
-    :Unregister from Service: as (US)
-    :Service Termination: as (ST)
-
-    Source - (US) : <<participate>>
-    (US) - Sink : <<initiate>>
-
-    (US) .> (ST) : <<include>>
-
-    (ST) - Sink : <<participate>>
-    Source - (ST) : <<initiate>>
-}
-@enduml
-```
+TBD
 
 # Contributions
 
