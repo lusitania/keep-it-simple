@@ -13,33 +13,33 @@ box "Sink Endpoint"
     participant "Data Client" as DC
     participant "Source Controller" as SCL
 end box
-actor SinkOp <<Operator>>
 
 activate SCS
 activate SCL
 activate DS
 
-SinkOp -> DC : start()
-    activate DC
-    DS <- DC : connect
+DC <- SCL : start
+activate DC
 
-    DC -> SCL : request registration
-    SCS <- SCL : {RegistrationRequest}
+DS <- DC : connect
 
-    SCS -> DS : call for synchronisation
-    activate DS
-    DS -> DC : {Sychronisation}
+DC -> SCL : request registration
+SCS <- SCL : {RegistrationRequest}
 
-    SCS --> SCL : {RegistrationRequestAcknowledgement}
-    DC <- SCL : registration requested
+SCS -> DS : call for synchronisation
+activate DS
+DS -> DC : {Sychronisation}
 
-    DC --> SCL : confirm synchronisation
-    SCS <- SCL : {RegistrationSuccess}
+SCS --> SCL : {RegistrationRequestAcknowledgement}
+DC <- SCL : registration requested
 
-    DS -> DC : {Sychronisation}
-    SCS -> DS : stop synchronisation
-    deactivate DS
+DC --> SCL : confirm synchronisation
+SCS <- SCL : {RegistrationSuccess}
 
-    SCS --> SCL : {RegistrationSuccessAcknowledgement}
+DS -> DC : {Sychronisation}
+SCS -> DS : stop synchronisation
+deactivate DS
+
+SCS --> SCL : {RegistrationSuccessAcknowledgement}
 @enduml
 ```
