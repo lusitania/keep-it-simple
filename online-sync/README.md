@@ -96,13 +96,13 @@ Exit condition:
 ## Transfer Phase
 
 ### Transfer Data
-Participating actors: SinkOp << Operator >>, SourceOp << Operator >>, INotify << File System >>
+Participating actors: SourceOp << Operator >>, INotify << File System >>
 
 Flow of events:
 
- 1. FileEventQueue registers to INotify events from a particular root path in the local file system
- 1. DataService polls FileEventQueue indefinitely and for every polled entry it
-    1. Retrieves the file content
+ 1. FileEvents registers to INotify events (content modified, attributes changed) from a SourceFolder in the local file system provided by SourceOp.
+ 1. DataService polls FileEvents indefinitely and for every polled entry it
+    1. Retrieves the file content and attributes
     1. Wraps file content and relative path (without root path component) into a FileData message
     1. Sends the FileData message to the DataClient
 
@@ -118,6 +118,8 @@ Quality requirements:
 
  - DataService may buffer polled entries until a certain threshold was met
  - FileData messages and thereby file contents fit into memory and must not be split
+
+![Transfer Data](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/transfer_data.svg)
 
 ### Too many INotify events (extension to Transfer Data)
 Participating actors: INotify << File System >>, FindTouch << Operator >>
