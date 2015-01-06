@@ -6,27 +6,27 @@ hide footbox
 actor SourceOp <<Operator>>
 
 box "Source Endpoint"
-    participant "Source Control\nService" as SCS
+    participant "Flow Control" as FC
     participant "Data Service" as DS
 end box
 
 box "Sink Endpoint"
-    participant "Source Controller" as SCL
+    participant "Remote Flow Control" as RFC
 end box
 actor SinkOp <<Operator>>
 
 SourceOp -> SinkOp : notify ConnectionDetails
 
-SourceOp -> SCS : start()
-    activate SCS
-    SCS -> SCS : bind socket
+SourceOp -> FC : start()
+    activate FC
+    FC -> FC : bind socket
 
-    SCS -> DS : start()
+    FC -> DS : start()
     activate DS
 
-SinkOp -> SCL : start()
-    activate SCL
-    SCL -> SCS : connect
+SinkOp -> RFC : start()
+    activate RFC
+    RFC -> FC : connect
 
 legend right
     start() provides ConnectionDetails

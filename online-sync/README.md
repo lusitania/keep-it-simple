@@ -55,11 +55,11 @@ Participating actors: SourceOperator (SourceOp), SinkOperator (SinkOp)
 
 Flow of events:
 
- 1. The SourceOp starts the SourceControlService of SourceEndpoint with defined ConnetionDetails
+ 1. The SourceOp starts the FlowControl of SourceEndpoint with defined ConnetionDetails
     1. The SourceEndpoint binds a socket to the committed ConnetionDetails
-    1. The SourceControlService starts the DataService
- 1. The SinkOp starts the SourceController with ConnetionDetails given from the SourceOp
-    1. The SourceController connects to the SourceControlService
+    1. The FlowControl starts the DataService
+ 1. The SinkOp starts the RemoteFlowControl with ConnetionDetails given from the SourceOp
+    1. The RemoteFlowControl connects to the FlowControl
 
 Entry condition:
 
@@ -72,20 +72,20 @@ Entry condition:
 Flow of events:
 
  1. DataClient connects to the DataService
- 1. DataClient issues a registration request to the SourceController 
- 1. The SourceController sends RegistrationRequest command to the SourceControlService
-    1. The SourceControlService calls the DataService to issue Synchronisation messages
-    1. DataService sends SynchronisationMessages to the DataClient
-    1. SourceControlService responds with a RegistrationRequestAcknowledgement
- 1. The SourceController notifies the DataClient the synchronisation is underway
- 1. The DataClient receives the Synchronisation messages and notifies the SourceController of successful registration
- 1. SourceController sends RegistrationSuccess command to the SourceControlService
-    1. The SourceControlService notifies the DataService to stop sending SynchronisationMessages
-    1. The SourceControlService sends RegistrationSuccessAcknowledgement
+ 1. DataClient is ready for registration calls RemoteFlowControl to initiate registration
+ 1. The RemoteFlowControl sends RegistrationRequest command to the FlowControl
+    1. The FlowControl calls the DataService to issue Synchronisation messages
+    1. DataService sends SynchronisationMessages to the DataClient and informs FlowControl
+    1. FlowControl responds to RemoteFlowControl with a RegistrationRequestAcknowledgement
+ 1. The RemoteFlowControl notifies the DataClient the synchronisation is underway
+ 1. The DataClient receives the Synchronisation messages and notifies the RemoteFlowControl of successful registration
+ 1. RemoteFlowControl sends RegistrationSuccess command to the FlowControl
+    1. The FlowControl notifies the DataService to stop sending Synchronisation messages
+    1. The FlowControl sends RegistrationSuccessAcknowledgement to RemoteFlowControl
 
 Entry condition:
 
- - SourceController is connected with SourceControlService
+ - RemoteFlowControl is connected with FlowControl and ready to issue commands
 
 Exit condition:
 

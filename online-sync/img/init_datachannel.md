@@ -5,41 +5,41 @@
 hide footbox
 
 box "Source Endpoint"
-    participant "Source Control\nService" as SCS
+    participant "Flow Control" as FC
     participant "Data Service" as DS
 end box
 
 box "Sink Endpoint"
     participant "Data Client" as DC
-    participant "Source Controller" as SCL
+    participant "Remote Flow Control" as RFC
 end box
 
-activate SCS
-activate SCL
+activate FC
+activate RFC
 activate DS
 
-DC <- SCL : start
+DC <- RFC : start
 activate DC
 
 DS <- DC : connect
 
-DC -> SCL : request registration
-SCS <- SCL : {RegistrationRequest}
+DC -> RFC : request registration
+FC <- RFC : {RegistrationRequest}
 
-SCS -> DS : call for synchronisation
+FC -> DS : call for synchronisation
 activate DS
 DS -> DC : {Sychronisation}
 
-SCS --> SCL : {RegistrationRequestAcknowledgement}
-DC <- SCL : registration requested
+FC --> RFC : {RegistrationRequestAcknowledgement}
+DC <- RFC : registration requested
 
-DC --> SCL : confirm synchronisation
-SCS <- SCL : {RegistrationSuccess}
+DC --> RFC : confirm synchronisation
+FC <- RFC : {RegistrationSuccess}
 
 DS -> DC : {Sychronisation}
-SCS -> DS : stop synchronisation
+FC -> DS : stop synchronisation
 deactivate DS
 
-SCS --> SCL : {RegistrationSuccessAcknowledgement}
+FC --> RFC : {RegistrationSuccessAcknowledgement}
 @enduml
 ```
