@@ -15,6 +15,8 @@ box "Sink Endpoint"
 end box
 actor SinkOp <<Operator>>
 
+SourceOp -> SinkOp : notify ConnectionDetails
+
 SourceOp -> SCS : start()
     activate SCS
     SCS -> SCS : bind socket

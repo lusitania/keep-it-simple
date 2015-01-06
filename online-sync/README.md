@@ -49,9 +49,8 @@ Flow of events:
  1. In a *Termination Phase* an Endpoint send termination request which closes down the connection in mutual agreement
 
 ## Initialisation Phase
-![Initialisation](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/initialisation.svg)
 
-### Case: Init CommandChannel
+### Init CommandChannel
 Participating actors: SourceOperator (SourceOp), SinkOperator (SinkOp)
 
 Flow of events:
@@ -68,12 +67,10 @@ Entry condition:
 
 ![Command Channel](https://rawgit.com/lusitania/keep-it-simple/master/online-sync/img/init_commandchannel.svg)
 
-### Case: Init DataChannel
-Participating actors: SinkOp
+### Init DataChannel
 
 Flow of events:
 
- 1. The SinkOp starts the DataClient
  1. DataClient connects to the DataService
  1. DataClient issues a registration request to the SourceController 
  1. The SourceController sends RegistrationRequest command to the SourceControlService
@@ -98,8 +95,8 @@ Exit condition:
 
 ## Transfer Phase
 
-### Case: Transfer Data
-Participating actors: SinkOp <<Operator>>, SourceOp <<Operator>>, INotify <<File System>>
+### Transfer Data
+Participating actors: SinkOp << Operator >>, SourceOp << Operator >>, INotify << File System >>
 
 Flow of events:
 
@@ -122,8 +119,8 @@ Quality requirements:
  - DataService may buffer polled entries until a certain threshold was met
  - FileData messages and thereby file contents fit into memory and must not be split
 
-### Case: Too many INotify events (extension to Transfer Data)
-Participating actors: INotify <<File System>>, FindTouch <<Operator>>
+### Too many INotify events (extension to Transfer Data)
+Participating actors: INotify << File System >>, FindTouch << Operator >>
 
 Flow of events: 
 
