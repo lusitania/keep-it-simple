@@ -33,6 +33,8 @@ DS -> DC : {Sychronisation}
 FC --> RFC : {RegistrationRequestAcknowledgement}
 DC <- RFC : registration requested
 
+...
+
 DC --> RFC : confirm synchronisation
 FC <- RFC : {RegistrationSuccess}
 
