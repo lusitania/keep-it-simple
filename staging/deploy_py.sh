@@ -2,23 +2,21 @@
 
 # PEP 20 explicit is better than implicit
 set -e -u
-PYBIN="python3.3"
-ENVDIR="$NAME/.env"
 
 # Allow argument list *.gz. Take only first argument and do python deploy magic. Ignore remainder.
 NAME="${1/.tar.gz}"
-echo "-- Deploying $NAME"
+ENVDIR="${ENVDIR:-$NAME/.env}"
 
-test -e "$NAME" && echo "--- Removing superseded copy" && rm -r "$NAME"
+echo "[${0##*/}] Deploying $NAME"
 
-echo "--- Extracting tarball"
+source ${0%/*}/mkenv.sh
+
+test -e "$NAME" && echo "[${0##*/}] Removing superseded copy" && rm -r "$NAME"
+
+echo "[${0##*/}] Extracting tarball"
 tar xzf "$1"
 
-echo "--- Creating environment $ENVDIR"
-# --relocatable gives you no extra here since every env is independent
-virtualenv -p "$PYBIN" --clear "$ENVDIR"
-
-echo "--- Registering webapp"
+echo "[${0##*/}] Registering webapp"
 set +u
 source "$ENVDIR/bin/activate"
 set -u
@@ -28,7 +26,7 @@ cd "$NAME"
 "$PYBIN" setup.py develop |& tee setup.log
 cd -
 
-echo "--- Cleaning up"
+echo "[${0##*/}] Cleaning up"
 read -p "Delete tarball? [y/n]: " -s -n 1 askdelete
 if [[ "$askdelete" =~ "y" ]]; then rm -v "$1"; fi
 
