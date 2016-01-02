@@ -140,7 +140,7 @@ Quality requirements:
 
 ## Termination Phase
 
-TBD
+TBD, see https://stackoverflow.com/questions/21338925/why-does-my-recv-hang-for-large-messages-when-the-sender-closes-the-socket
 
 # Contributions
 
